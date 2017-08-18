@@ -21,6 +21,11 @@ public class OffersDAO {
 	public void setDataSource(DataSource jdbc) {
 		this.jdbc = new NamedParameterJdbcTemplate(jdbc);
 	}
+	
+	public boolean delete(int id){
+		MapSqlParameterSource params = new MapSqlParameterSource("id", id);
+		return jdbc.update("delete from offers where id=:id", params) == 1;
+	}
 
 	public List<Offer> getOffers() {
 		
