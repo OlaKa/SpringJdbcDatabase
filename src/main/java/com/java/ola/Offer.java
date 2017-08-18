@@ -1,10 +1,12 @@
 package com.java.ola;
 
 public class Offer {
+	
 	private int id;
 	private String name;
 	private String email;
 	private String text;
+	
 	public int getId() {
 		return id;
 	}
@@ -28,6 +30,10 @@ public class Offer {
 	}
 	public void setText(String text) {
 		this.text = text;
+	}
+	@Override
+	public String toString() {
+		return "Offer [id=" + id + ", name=" + name + ", email=" + email + ", text=" + text + "]";
 	}
 
 	
