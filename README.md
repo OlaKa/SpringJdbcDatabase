@@ -1,0 +1,1 @@
+Small project done with Maven, Spring and mySQL
