@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,15 @@ public class OffersDAO {
 		this.jdbc = new NamedParameterJdbcTemplate(jdbc);
 	}
 	
+	
+	public boolean create(Offer offer){
+		
+		BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(offer);
+		
+		return jdbc.update("insert into offers(name, text,email) values (:name,:text,:email)", params) == 1;
+		
+	}
+	
 	public boolean delete(int id){
 		MapSqlParameterSource params = new MapSqlParameterSource("id", id);
 		return jdbc.update("delete from offers where id=:id", params) == 1;
@@ -29,10 +39,10 @@ public class OffersDAO {
 
 	public List<Offer> getOffers() {
 		
-		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("name", "Sue");
+		/*MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("name", "Sue");*/
 		
-		return jdbc.query("select * from  offers where name = :name", params, new RowMapper<Offer>() {
+		return jdbc.query("select * from  offers", new RowMapper<Offer>() {
 			public Offer mapRow(ResultSet rs, int rowNum) throws SQLException {
 				Offer offer = new Offer();
 
