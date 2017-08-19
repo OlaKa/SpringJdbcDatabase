@@ -11,6 +11,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.stereotype.Component;
 
 @Component("offersDao")
@@ -22,26 +24,43 @@ public class OffersDAO {
 	public void setDataSource(DataSource jdbc) {
 		this.jdbc = new NamedParameterJdbcTemplate(jdbc);
 	}
-	
-	
-	public boolean create(Offer offer){
-		
+
+	public boolean create(Offer offer) {
+
 		BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(offer);
-		
+
 		return jdbc.update("insert into offers(name, text,email) values (:name,:text,:email)", params) == 1;
-		
+
 	}
 	
-	public boolean delete(int id){
+	//Batch job
+	
+	public int [] create(List<Offer> offer){
+		
+		SqlParameterSource[] params = SqlParameterSourceUtils.createBatch(offer.toArray());
+		return jdbc.batchUpdate("insert into offers(name, text, email) values (:name,:text,:email)", params);
+	}
+
+	public boolean delete(int id) {
 		MapSqlParameterSource params = new MapSqlParameterSource("id", id);
 		return jdbc.update("delete from offers where id=:id", params) == 1;
 	}
 
+	public boolean update(Offer offer) {
+
+		BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(offer);
+
+		return jdbc.update("update offers set name=:name, text=:text ,email=:email where id=:id", params) == 1;
+
+	}
+
 	public List<Offer> getOffers() {
-		
-		/*MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("name", "Sue");*/
-		
+
+		/*
+		 * MapSqlParameterSource params = new MapSqlParameterSource();
+		 * params.addValue("name", "Sue");
+		 */
+
 		return jdbc.query("select * from  offers", new RowMapper<Offer>() {
 			public Offer mapRow(ResultSet rs, int rowNum) throws SQLException {
 				Offer offer = new Offer();
@@ -54,12 +73,12 @@ public class OffersDAO {
 			}
 		});
 	}
-	
-public Offer getOffer(int id) {
-		
+
+	public Offer getOffer(int id) {
+
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("id", id);
-		
+
 		return jdbc.queryForObject("select * from  offers where id = :id", params, new RowMapper<Offer>() {
 			public Offer mapRow(ResultSet rs, int rowNum) throws SQLException {
 				Offer offer = new Offer();

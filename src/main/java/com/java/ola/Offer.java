@@ -25,7 +25,6 @@ public class Offer {
 	}
 
 
-
 	public int getId() {
 		return id;
 	}

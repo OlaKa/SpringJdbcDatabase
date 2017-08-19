@@ -1,5 +1,6 @@
 package com.java.ola;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.context.ApplicationContext;
@@ -16,6 +17,15 @@ public class App {
 		ApplicationContext context = new ClassPathXmlApplicationContext("com/ola/java/beans/bean.xml");
 
 		OffersDAO offersDao = (OffersDAO) context.getBean("offersDao");
+		
+			
+		Offer updateOffer = new Offer(6,"Diana", "diana@gmail.com", "Backend developer");
+		
+		if(offersDao.update(updateOffer)){
+			System.out.println("Object updated");
+		}else{
+			System.out.println("Update failed");
+		}
 
 		try {
 			
@@ -27,6 +37,19 @@ public class App {
 			offersDao.create(offer1);
 			offersDao.create(offer2);
 			offersDao.create(offer3); */
+			
+			//Batch job
+			
+			List<Offer> listOffers = new ArrayList<Offer>();
+			
+			listOffers.add(new Offer("Ola", "ola@gmail.com", "Java and C++ programmer"));
+			listOffers.add(new Offer("Lena", "lena@gmail.com", "Angular expert"));
+			
+			int [] rvals = offersDao.create(listOffers);
+			
+			for(int i: rvals){
+				System.out.println("Batch job: " + i);
+			}
 			
 			List<Offer> offers = offersDao.getOffers();
 
